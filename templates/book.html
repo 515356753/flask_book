@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+       .pg li{
+           float: left; margin-left: 20px;list-style: none;}
+    </style>
+</head>
+<body>
+<h1>书籍列表</h1>
+
+<form action="/book/list" method="post">
+       {#设置隐藏的csrf_token,使用了CSRFProtect保护app之后,即可使用csrf_token()方法#}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+书名:<input type="text" name="name" autocomplete="off" value="{{name}}"/> <input type="submit" value="查找">
+</form>
+
+
+<ul>
+    {% for item in books %}
+    <li>id:{{item.id}},书名:{{item.name}},作者名:{{item.author.name}}  <a href="#">删除</a>&nbsp;<a href="{{ url_for('update.index',id=item.name) }}">修改</a></li>
+    {% endfor %}
+</ul>
+
+<a href="/add/list">增加</a>
+
+
+<ul class="pg">
+    {% if paginate.has_prev%}
+        <li><a href=" ">上一页</a></li>
+    {%endif%}
+    {%for i in paginate.iter_pages()%}
+        {%if paginate.page == i %}
+            <li><a href="/book/list?page={{i}}" class="current">{{i}}</a></li>
+        {%else%}
+            <li><a href="/book/list?page={{i}}">{{i}}</a></li>
+        {%endif%}
+    {%endfor%}
+    {% if paginate.has_next%}
+        <li><a href="/book/list?page={{paginate.next_num}}">下一页</a></li>
+    {%endif %}
+
+</ul>
+
+
+</body>
+</html>
